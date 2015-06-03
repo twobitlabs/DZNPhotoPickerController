@@ -26,6 +26,8 @@
 /** YES if the controller started a request and loading content. */
 @property (nonatomic, readonly, getter = isLoading) BOOL loading;
 
+-(instancetype)initWithColumnCount:(NSUInteger)columns;
+
 /**
  Stops any loading HTTP request.
  */

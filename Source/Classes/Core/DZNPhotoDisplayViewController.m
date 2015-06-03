@@ -59,6 +59,14 @@ static CGFloat kDZNPhotoDisplayMinimumBarHeight = 44.0;
     return [self initWithCollectionViewLayout:[DZNPhotoDisplayViewController flowLayout]];
 }
 
+- (instancetype)initWithColumnCount:(NSUInteger)columns {
+    self = [self init];
+    if (columns > 0) {
+        _columnCount = columns;
+    }
+    return self;
+}
+
 - (instancetype)initWithCollectionViewLayout:(UICollectionViewLayout *)layout
 {
     self = [super initWithCollectionViewLayout:layout];
@@ -315,10 +323,12 @@ Returns the custom collection view layout.
     CGFloat cellHeight = [self cellSize].height;
     
     NSInteger count = (int)(contentSize.height/cellHeight);
-    
-    if (self.selectedServiceClient.service == DZNPhotoPickerControllerServiceGoogleImages &&
-        self.selectedServiceClient.subscription == DZNPhotoPickerControllerSubscriptionFree) {
-        count = count/2;
+
+    NSInteger maxResultsForFree = 10;
+    while (self.selectedServiceClient.service == DZNPhotoPickerControllerServiceGoogleImages &&
+        self.selectedServiceClient.subscription == DZNPhotoPickerControllerSubscriptionFree &&
+        (count * self.columnCount) > maxResultsForFree) {
+        count--;
     }
     
     return count;

@@ -49,6 +49,8 @@ typedef void (^DZNPhotoPickerControllerCancellationBlock)(DZNPhotoPickerControll
 @property (nonatomic, strong) DZNPhotoPickerControllerCancellationBlock cancellationBlock;
 /** YES if auto-completion search is available while the user is typing on the search bar. This data uses Flickr's tag search API. Default is YES. */
 @property (nonatomic, assign) BOOL allowAutoCompletedSearch;
+/** The number of columns to show in search results */
+@property (nonatomic, assign) NSUInteger columnCount;
 
 /**
  Initializes and returns a newly created picker controller, on edit mode only.
