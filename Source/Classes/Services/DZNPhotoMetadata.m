@@ -22,6 +22,7 @@
 @property (readwrite, nonatomic) NSString *contentType;
 @property (readwrite, nonatomic) NSNumber *height;
 @property (readwrite, nonatomic) NSNumber *width;
+@property (readwrite, nonatomic) NSNumber *byteSize;
 
 @end
 
@@ -45,7 +46,7 @@
             _sourceURL = [NSURL URLWithString:[[[object objectForKey:@"images"] objectAtIndex:1] objectForKey:@"url"]];
             _width = [object objectForKey:@"width"];
             _height = [object objectForKey:@"height"];
-            
+
             NSString *format = [object objectForKey:@"image_format"];
             if (format && format.length > 0) {
                 _contentType = [NSString stringWithFormat:@"image/%@",format];
@@ -90,6 +91,7 @@
             _width = [object valueForKeyPath:@"image.width"];
             _height = [object valueForKeyPath:@"image.height"];
             _contentType = [object objectForKey:@"mime"];
+            _byteSize = [object valueForKeyPath:@"image.byteSize"];
         }
         else if ((service & DZNPhotoPickerControllerServiceBingImages) > 0)
         {
@@ -143,7 +145,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"{\nserviceName = %@ \nid = %@ \nauthorName = %@ \nauthorUsername = %@ \nauthorProfileURL = %@ \ndetailURL = %@ \nthumbURL = %@ \nsourceURL = %@ \nwidth : %@ \nheight = %@ \ncontentType = %@\n}", _serviceName, _Id, _authorName, _authorUsername, _authorProfileURL, _detailURL, _thumbURL, _sourceURL, _width, _height, _contentType];
+    return [NSString stringWithFormat:@"{\nserviceName = %@ \nid = %@ \nauthorName = %@ \nauthorUsername = %@ \nauthorProfileURL = %@ \ndetailURL = %@ \nthumbURL = %@ \nsourceURL = %@ \nwidth : %@ \nheight = %@ \ncontentType = %@\nbyteSize = %@\n}", _serviceName, _Id, _authorName, _authorUsername, _authorProfileURL, _detailURL, _thumbURL, _sourceURL, _width, _height, _contentType, _byteSize];
 }
 
 
@@ -176,7 +178,8 @@
     if (self.authorUsername) [attributes setObject:self.authorUsername forKey:@"author_username"];
     if (self.authorProfileURL) [attributes setObject:self.authorProfileURL forKey:@"author_profile_url"];
     if (self.contentType) [attributes setObject:self.contentType forKey:@"content_type"];
-    
+    if (self.byteSize) [attributes setObject:self.byteSize forKey:@"byte_size"];
+
     return attributes;
 }
 
