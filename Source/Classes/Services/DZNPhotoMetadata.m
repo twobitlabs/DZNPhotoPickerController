@@ -200,6 +200,7 @@
     self.contentType = [decoder decodeObjectForKey:@"contentType"];
     self.height = [decoder decodeObjectForKey:@"height"];
     self.width = [decoder decodeObjectForKey:@"width"];
+    self.byteSize = [decoder decodeObjectForKey:@"byteSize"];
 
     return self;
 }
@@ -217,6 +218,7 @@
     [encoder encodeObject:self.contentType forKey:@"contentType"];
     [encoder encodeObject:self.height forKey:@"height"];
     [encoder encodeObject:self.width forKey:@"width"];
+    [encoder encodeObject:self.byteSize forKey:@"byteSize"];
 }
 
 

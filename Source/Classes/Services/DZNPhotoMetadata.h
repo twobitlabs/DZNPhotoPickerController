@@ -38,6 +38,8 @@
 @property (nonatomic, readonly) NSNumber *height;
 /** The width of the photo. */
 @property (nonatomic, readonly) NSNumber *width;
+/** The size in bytes of the photo. */
+@property (nonatomic, readonly) NSNumber *byteSize;
 
 /**
  Initializes a new photo metadata instance with request response.
