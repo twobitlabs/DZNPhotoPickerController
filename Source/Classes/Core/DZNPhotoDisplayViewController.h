@@ -25,6 +25,8 @@
 @property (nonatomic, readonly) NSInteger rowCount;
 /** YES if the controller started a request and loading content. */
 @property (nonatomic, readonly, getter = isLoading) BOOL loading;
+/** Maximum file size, in bytes, of images to display for selection. */
+@property (nonatomic, assign) NSInteger maxImageSize;
 
 -(instancetype)initWithColumnCount:(NSUInteger)columns;
 

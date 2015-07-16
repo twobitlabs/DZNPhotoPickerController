@@ -373,7 +373,7 @@ Returns the custom collection view layout.
 - (BOOL)canDisplayFooterView
 {
     if (_metadataList.count > 0) {
-        return (_metadataList.count%self.resultPerPage == 0) ? YES : NO;
+        return YES;//(_metadataList.count%self.resultPerPage == 0) ? YES : NO;
     }
     return self.loading;
 }
@@ -397,9 +397,54 @@ Returns the custom collection view layout.
     [self setActivityIndicatorsVisible:NO];
     
     if (!_metadataList) _metadataList = [NSMutableArray new];
-    
-    [_metadataList addObjectsFromArray:list];
-    
+
+    // Exclude images that are larged than maxImageSize
+    NSArray *filteredList;
+    if (self.maxImageSize > 0) {
+        NSPredicate *smallEnoughImages = [NSPredicate predicateWithBlock:^BOOL(DZNPhotoMetadata *metaData, NSDictionary *bindings) {
+            if (metaData.byteSize != nil) {
+                if (metaData.byteSize.integerValue > self.maxImageSize) {
+                    return NO;
+                }
+            }
+
+            return YES;
+        }];
+        filteredList = [list filteredArrayUsingPredicate:smallEnoughImages];
+    } else {
+        filteredList = list;
+    }
+
+    /* This class was assuming tha the final page from google would have less than resultPerPage items in it.  This
+       isn't always true.  Check if the first item in the requested page is alraedy in the result set.  If so you
+       have already seen this page and you are at the end of the result set but didn't realize it beacuse the last page
+       had resultPerPage elements in it.
+     */
+    BOOL hasDupe = NO;
+    NSString *id1 = [NSString stringWithFormat:@"%@", ((DZNPhotoMetadata *)filteredList[0]).Id];
+    for (DZNPhotoMetadata *metaData in _metadataList) {
+        NSString *id2 = [NSString stringWithFormat:@"%@", metaData.Id];
+
+        if ([id1 isEqualToString:id2]) {
+            hasDupe = YES;
+            break;
+        }
+    }
+
+    // Add the page of results if they aren't dupes
+    if (!hasDupe) {
+        [_metadataList addObjectsFromArray:filteredList];
+    }
+
+    if (!hasDupe && [list count] == self.resultPerPage && [_metadataList count] < self.resultPerPage) {
+        // Autoload more if we filtered out enough images that the first page is not full
+        [self loadMorePhotos:self.loadButton];
+    } else if (hasDupe || [list count] < self.resultPerPage) {
+        // Didn't get a full page back (or got the same page back) from google so we are at end of result set
+        self.loadButton.hidden = true;
+        self.loadButton.enabled = false;
+    }
+
     [self.collectionView reloadData];
 //    [self.collectionView reloadDataSetIfNeeded];
     
